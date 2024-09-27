@@ -1,0 +1,136 @@
+import * as anchor from "@coral-xyz/anchor";
+import { Program } from "@coral-xyz/anchor";
+import { Skillful } from "../target/types/skillful";
+import { PublicKey, Keypair,Connection } from "@solana/web3.js";
+import { expect } from "chai";
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
+const { SystemProgram } = anchor.web3;
+
+
+describe("skillful", () => {
+
+  // Function to load wallet key
+  const loadWalletKey = (): Keypair => {
+    const homeDir = os.homedir();
+    const walletKeyPath = path.join(homeDir, 'my-solana-wallet.json');
+    if (!fs.existsSync(walletKeyPath)) {
+      throw new Error(`Wallet key file not found at ${walletKeyPath}`);
+    }
+
+
+    const walletKeyData = JSON.parse(fs.readFileSync(walletKeyPath, 'utf-8'));
+
+    // Check if the wallet file contains an array (raw secret key)
+   if (Array.isArray(walletKeyData)) {
+    return Keypair.fromSecretKey(new Uint8Array(walletKeyData));
+   }
+    // Check if the wallet file contains a JSON object with a 'privateKey' field
+    if (walletKeyData.privateKey && Array.isArray(walletKeyData.privateKey)) {
+      return Keypair.fromSecretKey(new Uint8Array(walletKeyData.privateKey));
+    }
+    
+    // Check if the wallet file contains a base58 encoded private key
+    if (typeof walletKeyData === 'string') {
+      return Keypair.fromSecretKey(Uint8Array.from(walletKeyData.split(',').map(Number)));
+    }
+    return Keypair.fromSecretKey(new Uint8Array(walletKeyData.privateKey));
+  };
+
+  // Set up a connection to your Solana cluster
+  const connection = new Connection("http://localhost:8899", "confirmed");
+
+  // Create a wallet using the loaded key
+  const wallet = new anchor.Wallet(loadWalletKey());
+
+  // creating the provider
+  const provider = new anchor.AnchorProvider(
+    connection,
+    wallet,
+    { commitment: "confirmed" }
+  );
+
+  // Set the provider
+  anchor.setProvider(provider);
+
+  // Now you can use the provider to interact with your program
+  const program = anchor.workspace.Skillful as Program<Skillful>;
+
+  // Use the wallet's public key for the user
+  const userPublicKey = wallet.publicKey;
+  let userProfilePda: PublicKey;
+
+  before(async () => {
+    // Airdrop some SOL to the user's wallet for transactions (only if needed)
+    const balance = await connection.getBalance(userPublicKey);
+    if (balance < 1000000000) {
+      const signature = await provider.connection.requestAirdrop(userPublicKey, 1000000000);
+      await provider.connection.confirmTransaction(signature);
+    }
+  });
+
+  it("Is initialized!", async () => {
+    const name = 'Alice';
+    [userProfilePda] = PublicKey.findProgramAddressSync(
+      [Buffer.from('user_profile'), userPublicKey.toBuffer()],
+      program.programId,
+    );
+
+    await program.methods.initializeUser(name)
+      .accounts({
+        userProfile: userProfilePda,
+        user: userPublicKey,
+      })
+      
+      .rpc();
+    const userProfile = await program.account.userProfile.fetch(userProfilePda);
+    expect(userProfile.name).to.equal(name);
+    expect(userProfile.skills).to.be.empty;
+  });
+
+  it("Add a skill", async () => {
+    const skillName = "Rust Language";
+    await program.methods.addSkill(skillName)
+      .accounts({
+        userProfile: userProfilePda,
+        user: userPublicKey,
+      })
+      .rpc();
+
+    const userProfile = await program.account.userProfile.fetch(userProfilePda);
+    expect(userProfile.skills).to.have.lengthOf(1);
+    expect(userProfile.skills[0].name).to.equal(skillName);
+    expect(userProfile.skills[0].validated).to.be.false;
+    expect(userProfile.skills[0].validators).to.be.empty;
+  });
+
+  it("Request Validation", async () => {
+    const validatorKeypair = anchor.web3.Keypair.generate();
+    await program.methods.requestValidation(0, validatorKeypair.publicKey)
+      .accounts({
+        userProfile: userProfilePda,
+        user: userPublicKey,
+      })
+      .rpc();
+
+    const userProfile = await program.account.userProfile.fetch(userProfilePda);
+    expect(userProfile.skills[0].validators).to.have.lengthOf(1);
+    expect(userProfile.skills[0].validators[0].toString()).to.equal(validatorKeypair.publicKey.toString());
+  });
+
+  it("Fails to request validation for non-existent skill", async () => {
+    const validatorKeypair = anchor.web3.Keypair.generate();
+    try {
+      await program.methods.requestValidation(1, validatorKeypair.publicKey)
+        .accounts({
+          userProfile: userProfilePda,
+          user: userPublicKey,
+        })
+        .rpc();
+      expect.fail("the transaction should have failed");
+    } catch (error) {
+      expect(error.message).to.include("Index out of bounds");
+    }
+  });
+});
