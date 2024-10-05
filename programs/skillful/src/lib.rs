@@ -51,6 +51,7 @@ pub struct InitializeUser <'info>{
     pub user_profile: Account<'info, UserProfile >,
     #[account(mut)]
     pub user : Signer<'info>,
+    
     pub system_program : Program<'info, System >
 
 }

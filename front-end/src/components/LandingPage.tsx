@@ -1,68 +1,86 @@
-import React from 'react';
-import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'; 
-// Solana wallet button (you can remove if not using it)
+import { useMemo, useState} from "react";
+import {
+  ConnectionProvider,
+  WalletProvider,
+} from "@solana/wallet-adapter-react";
+import { SolflareWalletAdapter } from "@solana/wallet-adapter-wallets";
+import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
+import {
+  WalletModalProvider,
+  WalletMultiButton,
+} from "@solana/wallet-adapter-react-ui";
+import { clusterApiUrl } from "@solana/web3.js";
+import "./index.css";
+ 
+// Default styles that can be overridden by your app
+import "@solana/wallet-adapter-react-ui/styles.css";
+ 
 
-import "/src/App.css";
 
 
-const LandingPage = () => {
-  return (
-    <div className="bg-gray-100 min-h-screen">
-      {/* Navbar */}
-      <nav className="bg-white shadow-lg p-6">
-        <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-xl font-bold">Skillful</h1>
-          <WalletMultiButton className="bg-blue-500 text-white px-4 py-2 rounded" />
-        </div>
-      </nav>
 
-      {/* Hero Section */}
-      <section className="bg-blue-500 text-white py-20">
-        <div className="container mx-auto text-center">
-          <h1 className="text-5xl font-bold">Showcase and Validate Your Skills</h1>
-          <p className="mt-4 text-lg">
-            A decentralized platform for developers to showcase their skills and get verified by peers.
-          </p>
-          <button className="mt-6 bg-white text-blue-500 font-semibold px-6 py-3 rounded-lg">
-            Get Started
-          </button>
-        </div>
-      </section>
+//<WalletProvider autoConnect wallets={wallets}></WalletProvider>
+function App() {
 
-      {/* Features Section */}
-      <section className="py-20">
-        <div className="container mx-auto text-center">
-          <h2 className="text-3xl font-bold">Why Use Skillful?</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-            <div className="bg-white shadow-lg p-6 rounded-lg">
-              <h3 className="text-2xl font-bold">Peer Validation</h3>
-              <p className="mt-4">Get your skills verified by trusted peers and build your credibility.</p>
-            </div>
-            <div className="bg-white shadow-lg p-6 rounded-lg">
-              <h3 className="text-2xl font-bold">Blockchain-Powered</h3>
-              <p className="mt-4">Immutable records of your achievements stored on the blockchain.</p>
-            </div>
-            <div className="bg-white shadow-lg p-6 rounded-lg">
-              <h3 className="text-2xl font-bold">Developer-Focused</h3>
-              <p className="mt-4">Tailored specifically for developers to showcase technical expertise.</p>
-            </div>
-          </div>
-        </div>
-      </section>
+  // State to track profile initialization
+  const [isProfileInitialized, setIsProfileInitialized] = useState(false); 
+  
+  // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'.
+  const network = WalletAdapterNetwork.Devnet;
 
-      {/* Footer */}
-      <footer className="bg-gray-800 text-white py-8">
-        <div className="container mx-auto text-center">
-          <p>&copy; 2024 Skillful - All Rights Reserved</p>
-          <div className="flex justify-center space-x-4 mt-4">
-            <a href="#" className="hover:text-gray-400">Twitter</a>
-            <a href="#" className="hover:text-gray-400">GitHub</a>
-            <a href="#" className="hover:text-gray-400">LinkedIn</a>
-          </div>
-        </div>
-      </footer>
-    </div>
+  // You can also provide a custom RPC endpoint.
+  const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+ 
+  const wallets = useMemo(
+    () => [
+      // if desired, manually define specific/custom wallets here (normally not required)
+      // otherwise, the wallet-adapter will auto detect the wallets a user's browser has available
+      new SolflareWalletAdapter(),
+    ],
+    [network],
   );
-};
 
-export default LandingPage;
+
+  const handleIsInitialized = () =>{
+    setIsProfileInitialized(true);
+  };
+  
+ 
+  return (
+    <ConnectionProvider endpoint={endpoint}>
+    <WalletProvider wallets={wallets}>
+      <WalletModalProvider>
+         <div className="landing-page">
+           <header className="header">
+            <h1 className="title">Welcome to SkillValidation</h1>
+            <p className="">validate and show case your blockchain skill</p>
+           </header>
+
+           <div className="content">
+            {isProfileInitialized?(
+              <>
+              <WalletMultiButton className="wallet-button"/>
+              <h1 className="cta-text">connect your wallet to  get started </h1>
+              </>
+            ):(
+              <div className="profile-init">
+                <h2>initialize your profile</h2>
+                <p>set your profile to start validating your skill</p>
+                <button className="initial-button" onClick={handleIsInitialized}>
+                  initialize profile
+                </button>
+              </div>
+            )}
+           </div>
+         </div>
+      </WalletModalProvider>
+    </WalletProvider>
+  </ConnectionProvider>
+  
+  );
+
+   
+}
+
+ 
+export default App;
