@@ -1,4 +1,4 @@
-import { IdlAccounts, Program } from "@coral-xyz/anchor";
+/* import { IdlAccounts, Program } from "@coral-xyz/anchor";
 //import { IDL, Counter } from "./idl";
 import { clusterApiUrl, Connection, PublicKey } from "@solana/web3.js";
  
@@ -18,4 +18,4 @@ export const [counterPDA] = PublicKey.findProgramAddressSync(
  
 // This is just a TypeScript type for the Counter data structure based on the IDL
 // We need this so TypeScript doesn't yell at us
-export type CounterData = IdlAccounts<Counter>["counter"];
+export type CounterData = IdlAccounts<Counter>["counter"]; */
