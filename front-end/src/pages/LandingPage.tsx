@@ -1,18 +1,5 @@
-import { useMemo, useState} from "react";
-import {
-  ConnectionProvider,
-  WalletProvider,
-} from "@solana/wallet-adapter-react";
-import { SolflareWalletAdapter } from "@solana/wallet-adapter-wallets";
-import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
-import {
-  WalletModalProvider,
-  WalletMultiButton,
-} from "@solana/wallet-adapter-react-ui";
-import { clusterApiUrl } from "@solana/web3.js";
 import '../App.css'
 import Hero from "../components/Hero"; 
-import Partners from "../components/Partners";
 
 // Default styles that can be overridden by your app
 import "@solana/wallet-adapter-react-ui/styles.css";
