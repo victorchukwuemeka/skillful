@@ -10,10 +10,15 @@ import {
   WalletMultiButton,
 } from "@solana/wallet-adapter-react-ui";
 import { clusterApiUrl } from "@solana/web3.js";
-import "./index.css";
- 
+import '../App.css'
+import Hero from "../components/Hero"; 
+import Partners from "../components/Partners";
+
 // Default styles that can be overridden by your app
 import "@solana/wallet-adapter-react-ui/styles.css";
+import About from "../components/About";
+import Validate from "../components/Validate";
+import Hire from "../components/Hire";
  
 
 
@@ -22,7 +27,7 @@ import "@solana/wallet-adapter-react-ui/styles.css";
 //<WalletProvider autoConnect wallets={wallets}></WalletProvider>
 function App() {
 
-  // State to track profile initialization
+/*   // State to track profile initialization
   const [isProfileInitialized, setIsProfileInitialized] = useState(false); 
   
   // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'.
@@ -45,38 +50,14 @@ function App() {
     setIsProfileInitialized(true);
   };
   
- 
+ */ 
   return (
-    <ConnectionProvider endpoint={endpoint}>
-    <WalletProvider wallets={wallets}>
-      <WalletModalProvider>
-         <div className="landing-page">
-           <header className="header">
-            <h1 className="title">Welcome to SkillValidation</h1>
-            <p className="">validate and show case your blockchain skill</p>
-           </header>
-
-           <div className="content">
-            {isProfileInitialized?(
-              <>
-              <WalletMultiButton className="wallet-button"/>
-              <h1 className="cta-text">connect your wallet to  get started </h1>
-              </>
-            ):(
-              <div className="profile-init">
-                <h2>initialize your profile</h2>
-                <p>set your profile to start validating your skill</p>
-                <button className="initial-button" onClick={handleIsInitialized}>
-                  initialize profile
-                </button>
-              </div>
-            )}
-           </div>
-         </div>
-      </WalletModalProvider>
-    </WalletProvider>
-  </ConnectionProvider>
-  
+    <>
+      <Hero />
+      <About />
+      <Validate />
+      <Hire />
+    </>
   );
 
    

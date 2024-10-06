@@ -2,6 +2,129 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+    font-family: 'Gerbil';
+    src: url('./assets/fonts/gerbil.otf') format('opentype');
+}
+  
+@font-face {
+    font-family: 'Satoshi';
+    src: url('./assets/fonts/Satoshi-Regular.otf') format('opentype');
+}
 
+@font-face {
+    font-family: 'Clash';
+    src: url('./assets/fonts/ClashDisplay-Regular.otf') format('opentype');
+}
 
+.clash{
+    font-family: 'Clash', sans-serif;
+}
 
+nav{
+    font-family: 'Satoshi', sans-serif;
+}
+
+nav button{
+    border-radius: 40px;
+}
+
+.gerbil{
+    font-family: 'Gerbil', sans-serif;
+}
+
+.satoshi{
+    font-family: 'Satoshi', sans-serif;
+}
+
+.round{
+    border-radius: 72px;
+}
+.round-2{
+    border-radius: 40px;
+}
+
+.combobox{
+    border: 1px solid #fff;
+}
+
+.combobox input{
+    outline: none;
+}
+
+.combobox input:focus{
+    outline: none;
+}
+
+.glow{
+    border: 2px solid #69c680;
+    padding: 6px 0;
+    width: 142px;
+    background-color: #242F32;
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(105, 198, 128, 0.3)
+}
+
+.hero{
+    background: rgb(7,47,33);
+    background: radial-gradient(circle, rgba(7,47,33,1) 0%, rgba(8,33,25,1) 100%)
+}
+
+.concentric-circles-bg {
+    --circle-color: rgba(255, 255, 255, 0.1);
+    --bg-color-from: #004d00;
+    --bg-color-to: #003300;
+    background: linear-gradient(to bottom right, var(--bg-color-from), var(--bg-color-to));
+    position: relative;
+    overflow: hidden;
+  }
+  .concentric-circles-bg::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200vmin;
+    height: 200vmin;
+    background-image: 
+      radial-gradient(circle, transparent 10%, var(--circle-color) 10%, var(--circle-color) calc(10% + 2px), transparent calc(10% + 2px)),
+      radial-gradient(circle, transparent 20%, var(--circle-color) 20%, var(--circle-color) calc(20% + 2px), transparent calc(20% + 2px)),
+      radial-gradient(circle, transparent 30%, var(--circle-color) 30%, var(--circle-color) calc(30% + 2px), transparent calc(30% + 2px)),
+      radial-gradient(circle, transparent 40%, var(--circle-color) 40%, var(--circle-color) calc(40% + 2px), transparent calc(40% + 2px)),
+      radial-gradient(circle, transparent 50%, var(--circle-color) 50%, var(--circle-color) calc(50% + 2px), transparent calc(50% + 2px));
+    z-index: 0;
+  }
+
+  .ol::before {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    top:12vh;
+    left: 0;
+    pointer-events: none;
+    background-image: linear-gradient(to bottom, rgba(13,14,20,0), rgba(13, 14, 20, 0.9) 70%);
+    width: 100%;
+    height: 25vh;
+
+  }
+
+.grid-card{
+    width: 400px;
+    border-radius: 12px;
+}
+
+.validate__btn{
+    border: 2px solid #69c680;
+    border-radius: 12px;
+}
+
+.griddy {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Use a comma between 3 and 1fr */
+    gap: 20px; /* Optional: Adds space between the grid items */
+    padding: 10px; /* Optional: Adds padding inside the grid container */
+  }
+
+  .cb{
+    border-radius: 40px;
+  }
