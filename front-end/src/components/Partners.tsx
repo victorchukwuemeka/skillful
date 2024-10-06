@@ -7,10 +7,10 @@ const Partners = () => {
     <div className='mt-16 text-white satoshi flex flex-col items-center justify-center w-full relative h-[30vh]'>
         <div className='ol' />
 
-        <h1 className=' text-[32px]'>Our Amazing Partners</h1>
+        <h1 className='text-2xl md:text-[32px] '>Our Amazing Partners</h1>
         <div className='w-full partners px-[4vw]'>
-            <div className=' px-10 flex items-center justify-between mt-6 mb-10'>
-            <div className='flex flex-row items-center gap-3'>
+            <div className=' lg:px-10 flex overflow-scroll overflow items-center gap-36 lg:justify-between mt-6 mb-10'>
+            <div className='flex flex-row items-center lg:gap-3'>
                 <img src={st} alt='Superteam' className='h' />
                 <h2 className='text-[24px] font-semibold'>SuperteamNG</h2>
             </div>
